@@ -26,40 +26,6 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @PostMapping("/create-admin")
-    public ResponseEntity<Map<String, String>> createAdmin() {
-        // Deletar se existir
-        userRepository.findByEmail("admin@politicabr.com")
-                .ifPresent(user -> userRepository.delete(user));
-
-        // Criar novo com senha encodada pelo MESMO passwordEncoder da aplicação
-        User admin = new User();
-        admin.setUsername("admin");
-        admin.setEmail("admin@politicabr.com");
-        admin.setPassword(passwordEncoder.encode(""));
-        admin.setFirstName("Administrador");
-        admin.setLastName("Sistema");
-        admin.setRole(UserRole.ADMIN);
-        admin.setActive(true);
-        admin.setEmailVerified(true);
-        admin.setCreatedAt(LocalDateTime.now());
-
-        User saved = userRepository.save(admin);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Admin criado com sucesso!");
-        response.put("email", saved.getEmail());
-        response.put("hash", saved.getPassword());
-
-        return ResponseEntity.ok(response);
-    }
-
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) {
         LoginResponseDTO response = authService.authenticate(request);

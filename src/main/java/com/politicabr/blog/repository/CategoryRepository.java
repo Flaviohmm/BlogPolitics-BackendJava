@@ -13,6 +13,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     Optional<Category> findBySlug(String slug);
 
+    List<Category> findByActiveTrue();
+
+    List<Category> findByActiveTrueOrderByDisplayOrderAsc();
+
     boolean existsBySlug(String slug);
 
     @Query("SELECT c FROM Category c WHERE c.active = true ORDER BY c.name")
@@ -27,7 +31,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             GROUP BY c 
             ORDER BY c.name
             """)
-    List<Object[]> findCategoriesWithPostCount();
+    List<Object[]> findActiveCategoriesWithPostCount();
 
     // Categorias mais populares
     @Query("""
